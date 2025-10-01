@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,8 +32,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         return http
-        		 .cors()  // 👉 Esto habilita CORS en el filtro de seguridad
-                 .and()
+        		 .cors(Customizer.withDefaults()) // ✅ Nueva forma recomendada
             .csrf(csrf -> 
                 csrf
                 .disable())
@@ -54,7 +54,8 @@ public class SecurityConfig {
             
     }
     
-    //Configuración CORS específica para permitir desde Vercel
+    
+    //  Configuración CORS específica para permitir desde Vercel
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

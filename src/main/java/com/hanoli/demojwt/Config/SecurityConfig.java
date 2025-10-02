@@ -59,7 +59,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://shessmat-frontend.vercel.app")); // Solo tu frontend
+        config.setAllowedOrigins(List.of("https://shessmat-frontend.vercel.app","http://localhost:4200" )); // Solo tu frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // Necesario si usas cookies o Authorization headers

@@ -1,6 +1,7 @@
 package com.hanoli.demojwt.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanoli.demojwt.entity.Folio;
 import com.hanoli.demojwt.entity.FoliosAprobados;
 import com.hanoli.demojwt.entity.Imagen;
+import com.hanoli.demojwt.services.CloudinaryService;
 import com.hanoli.demojwt.services.FileService;
 import com.hanoli.demojwt.services.FolioService;
 import com.hanoli.demojwt.services.ImagenService;
@@ -59,6 +61,9 @@ public class FoliosRestController {
 	
 	@Autowired
     ImagenService imagenService;
+	
+	 @Autowired
+	 private CloudinaryService cloudinaryService;
 	
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
@@ -164,8 +169,7 @@ public class FoliosRestController {
 	}
 	
 	
-	 @PostMapping("/upload")
-	// public ResponseEntity<FileMessage> uploadFiles(@RequestParam("files")MultipartFile[] files){
+	/* @PostMapping("/upload")
 	 public ResponseEntity<FileMessage> uploadFiles(@RequestBody FileDTO file){
 	        String message = "";
 	        
@@ -173,25 +177,28 @@ public class FoliosRestController {
 	        System.out.println("Folio: " + file.getFolio());
 	        System.out.println("ImagenBase64: " + file.getBase64());
 	        
+	        System.out.println("Subiendo imagen con folio: " + file.getFolio());
+
+            String imageUrl = null;
+			try {
+				imageUrl = cloudinaryService.uploadBase64Image(file.getBase64(), file.getFolio());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+	        
 	        Imagen img = new Imagen();
 	        img.setFolio(file.getFolio());
-	        img.setImagen(file.getBase64());
+	        img.setImagen(imageUrl);
 	        
 	        
 	    	imagenService.guardaImagen(img);
 	        
 	        byte[] fileBytes = Base64.getDecoder().decode(file.getBase64());
 	        String decodedFile = new String(fileBytes);
-	       // System.out.println("Llegue al back");
-	       // System.out.println("Se recibio archivo: " + decodedFile);
 	        System.out.println("Archivo " + file.getNameFile() + " se subio con exito");
-	        
-	        /*String originalInput = "test input";
-	        String encodedString = Base64.getEncoder().encodeToString(originalInput.getBytes());
-	        System.out.println(encodedString);
-	        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
-	        String decodedString = new String(decodedBytes);
-	        System.out.println(decodedString);*/
+	     
 	        try{
 	        	
 	        	
@@ -208,9 +215,37 @@ public class FoliosRestController {
 	            message = "-1";
 	            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FileMessage(message));
 	        }
-	    }
+	    }*/
 	
-	
+	@PostMapping("/upload")
+    public ResponseEntity<?> uploadFiles(
+            @RequestParam("files") MultipartFile[] files,
+            @RequestParam("folio") String folio) {
+		 String message = "";
+
+        try {
+            System.out.println("Subiendo imágenes para folio: " + folio);
+
+            List<String> urls = cloudinaryService.uploadFiles(files, folio);
+
+            for (String url : urls) {
+                Imagen img = new Imagen();
+                img.setFolio(folio);
+                img.setImagen(url);
+                imagenService.guardaImagen(img);
+            }
+
+          //  return ResponseEntity.ok("✅ " + urls.size() + " imágenes subidas correctamente.");
+            message = "100";
+            return ResponseEntity.status(HttpStatus.OK).body(new FileMessage(message));
+        } catch (Exception e) {
+            /*e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                    .body("Error al subir las imágenes: " + e.getMessage());*/
+        	 message = "-1";
+	            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FileMessage(message));
+        }
+    }
      
 	// @ApiOperation(value = "getEndFolio", notes = "Obtiene el ultimo folio generado")
 		@GetMapping("/getEndFolio")

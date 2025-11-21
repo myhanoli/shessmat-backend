@@ -14,7 +14,7 @@ import com.hanoli.demojwt.services.FolioServiceCustom;
 public interface FolioRepository extends JpaRepository<Folio, Long>, FolioServiceCustom{
 	
 	@Query("SELECT MAX(f.folio) FROM Folio f")
-	 Integer getEndFolio();
+	 String getEndFolio();
 	
 	
 	@Query("SELECT f FROM Folio f where f.marca = ?1")

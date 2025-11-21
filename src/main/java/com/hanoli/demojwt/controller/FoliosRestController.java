@@ -95,7 +95,7 @@ public class FoliosRestController {
 	}
 	
 	//@ApiOperation(value = "guardaFolio", notes = "Guarda un folio en la BD")
-	@PostMapping("/guardarFolio")
+	/*@PostMapping("/guardarFolio")
 	public ResponseEntity<?> guardaFolio(@RequestBody Folio folio ) {
 			
 		
@@ -111,7 +111,30 @@ public class FoliosRestController {
 		response.put("mensaje", "El folio se guardo con exito");
 		return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
 		
+	}*/
+	
+	
+	
+	@PostMapping("/guardarFolio")
+	public ResponseEntity<?> guardaFolio(@RequestBody Folio folio) {
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        // En folio ya vienen los nuevos campos desde el frontend si los completó
+	        // encendido, traeCargador, marcaCargador, numSerieCargador
+	        folioService.guardaFolio(folio);
+	    } catch (Exception e) {
+	        response.put("mensaje", "Hubo un problema al guardar el folio: " + e.getMessage());
+	        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+
+	    response.put("mensaje", "El folio se guardó con éxito");
+	    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+
+
+	
+	
 	
 	/*@ApiOperation(value = "actualiza", notes = "Actualiza un empleado en la BD")
 	@PutMapping("/actualizar/{id}")
@@ -249,7 +272,7 @@ public class FoliosRestController {
      
 	// @ApiOperation(value = "getEndFolio", notes = "Obtiene el ultimo folio generado")
 		@GetMapping("/getEndFolio")
-		public Integer getEndFolio(){
+		public String getEndFolio(){
 			return folioService.getEndFolio();
 		}
 	 

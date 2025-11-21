@@ -44,7 +44,7 @@ public class FolioService {
 		return folioRepository.deleteById(id);
 	}*/
 	
-	public Integer getEndFolio() {
+	public String getEndFolio() {
 		return folioRepository.getEndFolio();
 	}
 	

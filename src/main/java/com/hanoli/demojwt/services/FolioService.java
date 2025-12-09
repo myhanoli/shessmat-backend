@@ -1,5 +1,6 @@
 package com.hanoli.demojwt.services;
 
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,17 @@ public class FolioService {
 	
 	public List<Folio> getLista(){
 		System.out.println("Voy a obtener los folios");
-		return folioRepository.findAll();
+	//	return folioRepository.findAll();
+		 List<Folio> folios = folioRepository.findAll();
+		    
+		    folios.sort(
+		            Comparator.comparing(
+		                Folio::getFecha,
+		                Comparator.nullsLast(Comparator.naturalOrder())
+		            ).reversed()
+		        );
+		    
+		    return folios;
 	}
 
 	

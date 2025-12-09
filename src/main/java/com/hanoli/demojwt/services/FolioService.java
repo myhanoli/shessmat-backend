@@ -21,6 +21,7 @@ public class FolioService {
 	FoliosAprobadosRepository foliosAprobadosRepository;
 	
 	public List<Folio> getLista(){
+		System.out.println("Voy a obtener los folios");
 		return folioRepository.findAll();
 	}
 

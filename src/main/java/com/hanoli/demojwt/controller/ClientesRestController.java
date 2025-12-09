@@ -122,5 +122,10 @@ public class ClientesRestController {
 	}
 	
 	
+	@GetMapping("/ultimo-numero")
+    public String getUltimoNumCliente() {
+        return clientesImpl.getUltimoNumCliente();
+    }
+	
 	
 }

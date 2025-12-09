@@ -17,4 +17,6 @@ public interface IClienteService {
 	
 	public void Eliminar(Long id);
 	
+	public String getUltimoNumCliente();
+	
 }

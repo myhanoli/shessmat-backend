@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +33,9 @@ public class Cliente implements Serializable{
 	//Configuracion para MySQL
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
+	// ⭐ NUEVO CAMPO: Número de Cliente (ejemplo: C2025-0001)
+	@Column(unique = true, nullable = false) // Es conveniente que sea único y no nulo
+	private String numCliente;
 	private String nombre;
 	private String apellidoPat;
 	private String apellidoMat;
@@ -57,6 +61,16 @@ public class Cliente implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	// Getters y Setters para numCliente
+	public String getNumCliente() {
+		return numCliente;
+	}
+
+	public void setNumCliente(String numCliente) {
+		this.numCliente = numCliente;
+	}
+		
 	public String getNombre() {
 		return nombre;
 	}

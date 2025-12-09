@@ -44,5 +44,17 @@ public class ClienteServiceImpl implements IClienteService{
 		 clientesDao.deleteById(id);
 		
 	}
+	
+	public String getUltimoNumCliente() {
+        String ultimo = clientesDao.findMaxNumCliente();
+        
+        // Manejar el caso si no hay clientes registrados (la tabla está vacía)
+        if (ultimo == null || ultimo.isEmpty()) {
+            // Devolver un valor base para que Angular pueda generar el consecutivo 1
+            int añoActual = java.time.Year.now().getValue();
+            return "C" + añoActual + "-0000"; 
+        }
+        return ultimo;
+    }
 
 }

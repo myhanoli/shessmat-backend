@@ -68,6 +68,7 @@ public class FoliosRestController {
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
 	public List<Folio> getFolios(){
+		System.out.println("Controller getFolios");
 		return folioService.getLista();
 	}
 	

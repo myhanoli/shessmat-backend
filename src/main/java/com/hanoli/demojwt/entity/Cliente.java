@@ -39,9 +39,11 @@ public class Cliente implements Serializable{
 	private String nombre;
 	private String apellidoPat;
 	private String apellidoMat;
-	private String direccion;
 	private String telefono;
 	private String correo;
+	private String direccion;
+	
+	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate fechaAlta;
 	

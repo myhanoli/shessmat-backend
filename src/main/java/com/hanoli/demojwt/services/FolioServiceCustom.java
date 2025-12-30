@@ -6,7 +6,8 @@ package com.hanoli.demojwt.services;
 import java.util.List;
 
 import com.hanoli.demojwt.entity.Folio;
-import com.hanoli.shessmat.dto.FolioDTO;
+import com.hanoli.shessmat.dto.FolioResponseDTO;
+import com.hanoli.shessmat.dto.FolioFiltrosDTO;
 
 
 
@@ -16,6 +17,6 @@ import com.hanoli.shessmat.dto.FolioDTO;
  */
 public interface FolioServiceCustom {
 	
-	public List<Folio> getByFiltros(FolioDTO folioDTO);
+	public List<Folio> getByFiltros(FolioFiltrosDTO folioDTO);
 	
 }

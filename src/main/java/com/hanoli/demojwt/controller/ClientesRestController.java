@@ -3,6 +3,7 @@ package com.hanoli.demojwt.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import com.hanoli.demojwt.User.Role;
 import com.hanoli.demojwt.entity.Cliente;
 import com.hanoli.demojwt.entity.Usuario;
 import com.hanoli.demojwt.sevicesImpl.ClienteServiceImpl;
+import com.hanoli.shessmat.dto.ClienteDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,10 +41,19 @@ public class ClientesRestController {
 	private ClienteServiceImpl clientesImpl;
 	
 	
-	@GetMapping("/lista")
+	/*@GetMapping("/lista")
 	public List<Cliente> getClientes(){
 		return clientesImpl.getLista();
+	}*/
+	
+	
+	@GetMapping("/lista")
+	public List<ClienteDTO> getClientes() {
+	    return clientesImpl.getLista().stream()
+	                       .map(c -> new ClienteDTO(c.getId(),c.getNumCliente(), c.getNombre(),c.getApellidoPat(),c.getApellidoMat(),c.getTelefono(), c.getCorreo(), c.getDireccion(), c.getFechaAlta()))
+	                       .collect(Collectors.toList());
 	}
+
 	
 	
 	@GetMapping("/idCliente/{id}")

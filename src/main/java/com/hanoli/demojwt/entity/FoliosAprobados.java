@@ -1,16 +1,12 @@
 package com.hanoli.demojwt.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name="foliosaprobados")
@@ -28,8 +24,8 @@ public class FoliosAprobados implements Serializable{
 	private Long id;
 	private String folio;
 	
-	@Temporal(TemporalType.DATE)
-	private Date fecha;
+	//@Temporal(TemporalType.DATE)
+	private LocalDate fecha;
 	private String tipoEquipo;
 	private String marca;
 	private String modelo;
@@ -49,14 +45,15 @@ public class FoliosAprobados implements Serializable{
 	public void setFolio(String folio) {
 		this.folio = folio;
 	}
-	public Date getFecha() {
+	
+	
+	
+	public LocalDate getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
-
-	
 	public String getTipoEquipo() {
 		return tipoEquipo;
 	}

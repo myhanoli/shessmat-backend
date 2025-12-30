@@ -1,14 +1,18 @@
 package com.hanoli.demojwt.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -16,6 +20,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="folios")
@@ -28,23 +33,43 @@ public class Folio implements Serializable{
     private Long id;
     private String folio;
     
-    @Temporal(TemporalType.DATE)
-    private Date fecha;
+    //@Temporal(TemporalType.DATE)
+    private LocalDate  fecha;
+    
+ // ---------------- DATOS DEL EQUIPO ----------------
     private String tipoEquipo;
     private String marca;
     private String modelo;
     private String numSerie;
     private String comentarios;
 
-    // NUEVOS CAMPOS
-    private Boolean encendido;       // Para Laptop
-    private Boolean traeCargador;    // Para Laptop
-    private String marcaCargador;    // Para Laptop si trae cargador
-    private String numSerieCargador; // Para Laptop si trae cargador
+    // Campos específicos
+    private Boolean encendido;       
+    private Boolean traeCargador;    
+    private String marcaCargador;    
+    private String numSerieCargador; 
     
-    @JsonIgnoreProperties(value={"folios", "hibernateLazyInitializer", "handler"}, allowSetters=true)
+    
+ // ---------------- RELACIONES ----------------
+    
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cliente cliente;
+
+    
+    // Estatus actual del folio
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Estatus estatusActual;
+
+
+    // Historial de cambios
+    @OneToMany(mappedBy = "folio", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<HistorialEstatus> historial;
+
+
+    
 
     // ------------------ Getters y Setters ------------------
     
@@ -54,10 +79,15 @@ public class Folio implements Serializable{
     public String getFolio() { return folio; }
     public void setFolio(String folio) { this.folio = folio; }
 
-    public Date getFecha() { return fecha; }
-    public void setFecha(Date fecha) { this.fecha = fecha; }
+  
 
-    public String getTipoEquipo() { return tipoEquipo; }
+    public LocalDate getFecha() {
+		return fecha;
+	}
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
+	public String getTipoEquipo() { return tipoEquipo; }
     public void setTipoEquipo(String tipoEquipo) { this.tipoEquipo = tipoEquipo; }
 
     public String getMarca() { return marca; }
@@ -87,4 +117,19 @@ public class Folio implements Serializable{
 
     public String getNumSerieCargador() { return numSerieCargador; }
     public void setNumSerieCargador(String numSerieCargador) { this.numSerieCargador = numSerieCargador; }
+	public Estatus getEstatusActual() {
+		return estatusActual;
+	}
+	public void setEstatusActual(Estatus estatusActual) {
+		this.estatusActual = estatusActual;
+	}
+	public List<HistorialEstatus> getHistorial() {
+		return historial;
+	}
+	public void setHistorial(List<HistorialEstatus> historial) {
+		this.historial = historial;
+	}
+    
+    
+    
 }

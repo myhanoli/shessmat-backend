@@ -6,7 +6,7 @@ package com.hanoli.demojwt.services;
 import java.util.List;
 
 import com.hanoli.demojwt.entity.Imagen;
-import com.hanoli.shessmat.dto.FolioDTO;
+import com.hanoli.shessmat.dto.FolioResponseDTO;
 
 
 
@@ -16,6 +16,6 @@ import com.hanoli.shessmat.dto.FolioDTO;
  */
 public interface ImagenServiceCustom {
 	
-	public List<Imagen> getImagenByFolio(FolioDTO folioDTO);
+	public List<Imagen> getImagenByFolio(FolioResponseDTO folioDTO);
 	
 }

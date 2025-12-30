@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class FolioDTO {
+public class FolioFiltrosDTO {
 	
 	private String folio;
 	private String tipoEquipo;

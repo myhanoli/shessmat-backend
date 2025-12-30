@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanoli.demojwt.entity.Folio;
 import com.hanoli.demojwt.entity.FoliosAprobados;
 import com.hanoli.demojwt.entity.Imagen;
+import com.hanoli.demojwt.entity.Usuario;
 import com.hanoli.demojwt.services.CloudinaryService;
 import com.hanoli.demojwt.services.FileService;
 import com.hanoli.demojwt.services.FolioService;
@@ -37,7 +39,11 @@ import com.hanoli.demojwt.services.ImagenService;
 import com.hanoli.demojwt.sevicesImpl.IExportPdfImpl;
 import com.hanoli.shessmat.dto.FileDTO;
 import com.hanoli.shessmat.dto.FileMessage;
-import com.hanoli.shessmat.dto.FolioDTO;
+import com.hanoli.shessmat.dto.FolioResponseDTO;
+import com.hanoli.shessmat.dto.HistorialEstatusDTO;
+import com.hanoli.shessmat.dto.SeguimientoFolioDTO;
+import com.hanoli.shessmat.dto.FolioFiltrosDTO;
+import com.hanoli.shessmat.dto.FolioRequestDTO;
 
 /*import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;*/
@@ -67,7 +73,7 @@ public class FoliosRestController {
 	
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
-	public List<Folio> getFolios(){
+	public List<FolioResponseDTO> getFolios(){
 		System.out.println("Controller getFolios");
 		return folioService.getLista();
 	}
@@ -116,13 +122,12 @@ public class FoliosRestController {
 	
 	
 	
-	@PostMapping("/guardarFolio")
+	/*@PostMapping("/guardarFolio")
 	public ResponseEntity<?> guardaFolio(@RequestBody Folio folio) {
 	    Map<String, Object> response = new HashMap<>();
 
 	    try {
-	        // En folio ya vienen los nuevos campos desde el frontend si los completó
-	        // encendido, traeCargador, marcaCargador, numSerieCargador
+	     
 	        folioService.guardaFolio(folio);
 	    } catch (Exception e) {
 	        response.put("mensaje", "Hubo un problema al guardar el folio: " + e.getMessage());
@@ -131,10 +136,43 @@ public class FoliosRestController {
 
 	    response.put("mensaje", "El folio se guardó con éxito");
 	    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}*/
+	
+	@PostMapping("/guardarFolio")
+	public ResponseEntity<?> guardarFolio(@RequestBody FolioRequestDTO folioDTO) {
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        folioService.guardaFolio(folioDTO);
+	    } catch (Exception e) {
+	        response.put("mensaje", "Hubo un problema al guardar el folio: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+
+	    response.put("mensaje", "El folio se guardó con éxito");
+	    return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 
-	
+	@PutMapping("/folios/{id}")
+	public ResponseEntity<?> actualizarFolio(
+	        @PathVariable Long id,
+	        @RequestBody FolioRequestDTO dto) {
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        folioService.actualizarFolio(id, dto);
+	        response.put("mensaje", "Folio actualizado correctamente");
+	        return ResponseEntity.ok(response);
+
+	    } catch (RuntimeException e) {
+	        response.put("mensaje", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	    }
+	}
+
 	
 	
 	/*@ApiOperation(value = "actualiza", notes = "Actualiza un empleado en la BD")
@@ -297,13 +335,13 @@ public class FoliosRestController {
 	 
 	 
 	 	@PostMapping("/folios/getFiltros")
-	    public ResponseEntity<?> getFiltros(@RequestBody FolioDTO folioDTO) {
+	    public ResponseEntity<?> getFiltros(@RequestBody FolioFiltrosDTO folioFiltrosDTO) {
 
-	 		System.out.println("FechaInicio in controller: " + folioDTO.getFechaInicio());
+	 		System.out.println("FechaInicio in controller: " + folioFiltrosDTO.getFechaInicio());
 	 		
 	        Map<String,Object> response = new HashMap<>();
 
-	        List<Folio> result = folioService.getByFiltros(folioDTO);
+	        List<Folio> result = folioService.getByFiltros(folioFiltrosDTO);
 
 	        if(result.isEmpty()) {
 	            response.put("mensaje", "No se encontraron resultados");
@@ -341,6 +379,7 @@ public class FoliosRestController {
 					foliosAprobados.setModelo(dataFolio.getModelo());
 					foliosAprobados.setNumSerie(dataFolio.getNumSerie());
 					foliosAprobados.setTipoEquipo(dataFolio.getTipoEquipo());
+					//foliosAprobados.setFecha(dataFolio.getFecha());
 					foliosAprobados.setFecha(dataFolio.getFecha());
 					foliosAprobados.setCliente(1);
 					foliosAprobados.setEstatus(0);
@@ -374,6 +413,20 @@ public class FoliosRestController {
 			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
 			
 		}
-	
+		
+		
+		 @PostMapping("/seguimiento")
+		    public ResponseEntity<FolioResponseDTO> actualizarEstatus(
+		            @RequestBody SeguimientoFolioDTO dto) { // usuario logueado
+			  Folio folio = folioService.actualizarEstatus(dto, null);
+			    return ResponseEntity.ok(new FolioResponseDTO(folio));
+		    }
+		 
+		 
+		  @GetMapping("/{folioId}/historial")
+		    public ResponseEntity<List<HistorialEstatusDTO>> getHistorial(@PathVariable Long folioId) {
+		        List<HistorialEstatusDTO> historial = folioService.getHistorialPorFolio(folioId);
+		        return ResponseEntity.ok(historial);
+		    }
 	
 }

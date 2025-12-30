@@ -18,7 +18,8 @@ import org.springframework.stereotype.Repository;
 
 import com.hanoli.demojwt.entity.Folio;
 import com.hanoli.demojwt.services.FolioServiceCustom;
-import com.hanoli.shessmat.dto.FolioDTO;
+import com.hanoli.shessmat.dto.FolioResponseDTO;
+import com.hanoli.shessmat.dto.FolioFiltrosDTO;
 
 
 
@@ -33,13 +34,13 @@ public class FolioRepositoryImpl implements FolioServiceCustom {
     EntityManager em;
 	
 	@Override
-	public List<Folio> getByFiltros(FolioDTO folioDTO) {
-		String folio = folioDTO.getFolio();
-		String tipoEquipo = folioDTO.getTipoEquipo();
-        String marca = folioDTO.getMarca();
-        String modelo = folioDTO.getModelo();
-        Date fechaInicio = folioDTO.getFechaInicio();
-        Date fechaFin = folioDTO.getFechaFin();
+	public List<Folio> getByFiltros(FolioFiltrosDTO folioFiltrosDTO) {
+		String folio = folioFiltrosDTO.getFolio();
+		String tipoEquipo = folioFiltrosDTO.getTipoEquipo();
+        String marca = folioFiltrosDTO.getMarca();
+        String modelo = folioFiltrosDTO.getModelo();
+        Date fechaInicio = folioFiltrosDTO.getFechaInicio();
+        Date fechaFin = folioFiltrosDTO.getFechaFin();
 
         System.out.println("folio in getByFiltros: " + folio);
         System.out.println("tipoEquipo in getByFiltros: " + tipoEquipo);
@@ -75,5 +76,7 @@ public class FolioRepositoryImpl implements FolioServiceCustom {
 
         return em.createQuery(cq).getResultList();
 	}
+
+	
 
 }

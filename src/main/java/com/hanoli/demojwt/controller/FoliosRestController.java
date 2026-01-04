@@ -102,42 +102,6 @@ public class FoliosRestController {
 	}
 	
 	//@ApiOperation(value = "guardaFolio", notes = "Guarda un folio en la BD")
-	/*@PostMapping("/guardarFolio")
-	public ResponseEntity<?> guardaFolio(@RequestBody Folio folio ) {
-			
-		
-		Map<String,Object> response = new HashMap<>();
-		
-		try {
-			folioService.guardaFolio(folio);	
-		}catch (Exception e) {
-			response.put("mensaje", "Hubo un problema al guardar el folio" + e.getMessage());
-			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		response.put("mensaje", "El folio se guardo con exito");
-		return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
-		
-	}*/
-	
-	
-	
-	/*@PostMapping("/guardarFolio")
-	public ResponseEntity<?> guardaFolio(@RequestBody Folio folio) {
-	    Map<String, Object> response = new HashMap<>();
-
-	    try {
-	     
-	        folioService.guardaFolio(folio);
-	    } catch (Exception e) {
-	        response.put("mensaje", "Hubo un problema al guardar el folio: " + e.getMessage());
-	        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-
-	    response.put("mensaje", "El folio se guardó con éxito");
-	    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
-	}*/
-	
 	@PostMapping("/guardarFolio")
 	public ResponseEntity<?> guardarFolio(@RequestBody FolioRequestDTO folioDTO) {
 
@@ -175,36 +139,7 @@ public class FoliosRestController {
 
 	
 	
-	/*@ApiOperation(value = "actualiza", notes = "Actualiza un empleado en la BD")
-	@PutMapping("/actualizar/{id}")
-	public ResponseEntity<?> actualiza(@RequestBody Empleado empleado, @PathVariable Long id){
-		
-		Folio empl = foliosImpl.folioId(id);
-		
-		Map<String,Object> response = new HashMap<>();
-		
-		if(empl == null) {
-			
-			
-			response.put("mensaje", "El Id del empleado no existe");
-			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.NOT_FOUND);
-		}else {
-			try {
-				
-				empl.setNombre(empleado.getNombre());
-				empl.setApellidoPat(empleado.getApellidoPat());
-				
-				foliosImpl.guardaEmpleado(empl);
-				
-			}catch (Exception e) {
-				response.put("mensaje", "Hubo un problema al actualizar el empleado");
-				return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			response.put("mensaje", "El empleado se actualizo con exito");
-			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.OK);
-		}
-		
-	}*/
+	
 	
 	//@ApiOperation(value = "Eliminar", notes = "Elimina un Folio en la BD")
 	@DeleteMapping("/eliminarFolio/{id}")
@@ -230,54 +165,6 @@ public class FoliosRestController {
 		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(bais));
 	}
 	
-	
-	/* @PostMapping("/upload")
-	 public ResponseEntity<FileMessage> uploadFiles(@RequestBody FileDTO file){
-	        String message = "";
-	        
-	        System.out.println("Llegue al metodo uploadFiles: " + file.getFolio());
-	        System.out.println("Folio: " + file.getFolio());
-	        System.out.println("ImagenBase64: " + file.getBase64());
-	        
-	        System.out.println("Subiendo imagen con folio: " + file.getFolio());
-
-            String imageUrl = null;
-			try {
-				imageUrl = cloudinaryService.uploadBase64Image(file.getBase64(), file.getFolio());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-	        
-	        Imagen img = new Imagen();
-	        img.setFolio(file.getFolio());
-	        img.setImagen(imageUrl);
-	        
-	        
-	    	imagenService.guardaImagen(img);
-	        
-	        byte[] fileBytes = Base64.getDecoder().decode(file.getBase64());
-	        String decodedFile = new String(fileBytes);
-	        System.out.println("Archivo " + file.getNameFile() + " se subio con exito");
-	     
-	        try{
-	        	
-	        	
-	        	
-	            List<String> fileNames = new ArrayList<>();
-
-	            Arrays.asList(file.getNameFile()).stream().forEach(arch->{
-	                fileNames.add(arch);
-	            });
-
-	            message = "100";
-	            return ResponseEntity.status(HttpStatus.OK).body(new FileMessage(message));
-	        }catch (Exception e){
-	            message = "-1";
-	            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FileMessage(message));
-	        }
-	    }*/
 	
 	@PostMapping("/upload")
     public ResponseEntity<?> uploadFiles(

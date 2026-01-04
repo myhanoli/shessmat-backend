@@ -1,5 +1,6 @@
 package com.hanoli.demojwt.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -12,12 +13,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hanoli.demojwt.entity.CierreFolio;
 import com.hanoli.demojwt.entity.Cliente;
 import com.hanoli.demojwt.entity.Estatus;
 import com.hanoli.demojwt.entity.Folio;
 import com.hanoli.demojwt.entity.FoliosAprobados;
 import com.hanoli.demojwt.entity.HistorialEstatus;
+import com.hanoli.demojwt.entity.PiezaReparacion;
 import com.hanoli.demojwt.entity.Usuario;
+import com.hanoli.demojwt.repository.CierreFolioRepository;
 import com.hanoli.demojwt.repository.ClienteRepository;
 import com.hanoli.demojwt.repository.EstatusRepository;
 import com.hanoli.demojwt.repository.FolioRepository;
@@ -49,30 +53,17 @@ public class FolioService {
 	@Autowired
 	HistorialEstatusRepository historialEstatusRepository;
 	
+	@Autowired
+	CierreFolioRepository cierreFolioRepository;
 	
-	
-	
-	/*public List<Folio> getLista(){
-		System.out.println("Voy a obtener los folios");
-	//	return folioRepository.findAll();
-		 List<Folio> folios = folioRepository.findAll();
-		    
-		    folios.sort(
-		            Comparator.comparing(
-		                Folio::getFecha,
-		                Comparator.nullsLast(Comparator.naturalOrder())
-		            ).reversed()
-		        );
-		    
-		    return folios;
-	}*/
+
 	public List<FolioResponseDTO> getLista() {
 	    List<Folio> folios = folioRepository.findAll();
 	    folios.sort(
 	        Comparator.comparing(Folio::getFecha, Comparator.nullsLast(Comparator.naturalOrder()))
 	               .reversed()
 	    );
-	    // Mapear a DTO
+
 	    return folios.stream()
 	                 .map(FolioResponseDTO::new)
 	                 .toList();
@@ -87,31 +78,7 @@ public class FolioService {
 		return folioRepository.findById(Id).orElse(null);
 	}
 	
-	/*public Folio guardaFolio(Folio folio) {
-		
-		  
-		// Forzar estatus inicial
-		  Estatus estatusRecibido = estatusRepository
-	                .findByNombre("RECIBIDO")
-	                .orElseThrow(() -> new RuntimeException("Estatus RECIBIDO no existe"));
-
-	        folio.setEstatusActual(estatusRecibido);
-	        
-	        // 3Guardar folio
-	        Folio folioGuardado = folioRepository.save(folio);
-	        
-	        // 4️⃣ Guardar historial
-	        HistorialEstatus historial = new HistorialEstatus();
-	        historial.setFolio(folioGuardado);
-	        historial.setEstatusAnterior(null);
-	        historial.setEstatusNuevo(estatusRecibido);
-	        historial.setFechaCambio(new Date());
-	        historial.setComentario("Recepción del equipo");
-
-	        historialEstatusRepository.save(historial);
-		
-		return folioGuardado;
-	}*/
+	
 	
 	public Folio guardaFolio(FolioRequestDTO dto) {
 
@@ -130,17 +97,17 @@ public class FolioService {
         folio.setMarcaCargador(dto.getMarcaCargador());
         folio.setNumSerieCargador(dto.getNumSerieCargador());
 
-        // 🔑 Relación Cliente
+        //Relación Cliente
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         folio.setCliente(cliente);
 
-        // 🔑 Relación Estatus
+        //Relación Estatus
         Estatus estatusRecibido  = estatusRepository.findById(dto.getIdEstatus())
                 .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
         folio.setEstatusActual(estatusRecibido );
 
-        // 4️⃣ Guardar folio primero
+        //Guardar folio primero
         Folio folioGuardado = folioRepository.save(folio);
 
         // 5️⃣ Guardar historial
@@ -148,8 +115,8 @@ public class FolioService {
         historial.setFolio(folioGuardado);
         historial.setEstatusAnterior(null); // Primer estatus
         historial.setEstatusNuevo(estatusRecibido);
-        historial.setFechaCambio(LocalDate.now());
-        historial.setComentario("Recepción del equipo");
+        historial.setFechaCambio(LocalDateTime.now());
+        historial.setComentario(dto.getComentarios());
 
         historialEstatusRepository.save(historial);
         
@@ -185,9 +152,6 @@ public class FolioService {
 	public FoliosAprobados guardaFolioAprobado(FoliosAprobados folio) {
 		return foliosAprobadosRepository.save(folio);
 	}
-	/*public Object Eliminar(Long id) {
-		return folioRepository.deleteById(id);
-	}*/
 	
 	public String getEndFolio() {
 		return folioRepository.getEndFolio();
@@ -209,33 +173,74 @@ public class FolioService {
 		
 	}
 	
-	 public Folio actualizarEstatus(SeguimientoFolioDTO dto, Usuario usuario) {
-	        Folio folio = folioRepository.findById(dto.getFolioId())
-	                .orElseThrow(() -> new RuntimeException("Folio no encontrado"));
+	
+	
+	public Folio actualizarEstatus(SeguimientoFolioDTO dto, Usuario usuario) {
 
-	        Estatus nuevoEstatus = estatusRepository.findById(dto.getEstatusId())
-	                .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
+	    Folio folio = folioRepository.findById(dto.getFolioId())
+	            .orElseThrow(() -> new RuntimeException("Folio no encontrado"));
 
-	        Estatus estatusAnterior = folio.getEstatusActual();
+	    Estatus nuevoEstatus = estatusRepository.findById(dto.getEstatusId())
+	            .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
 
-	        // Crear historial
-	        HistorialEstatus historial = new HistorialEstatus();
-	        historial.setFolio(folio);
-	        historial.setEstatusAnterior(estatusAnterior);
-	        historial.setEstatusNuevo(nuevoEstatus);
-	        historial.setUsuario(usuario); // Usuario que hace el cambio
-	        historial.setComentario(dto.getComentario());
-	        historial.setFechaCambio(LocalDate.now());
-	        
-	        historialEstatusRepository.save(historial);
-
-	        // Actualizar estatus actual del folio
-	        folio.setEstatusActual(nuevoEstatus);
-	        folioRepository.save(folio);
-
-	        return folio;
+	    //No permitir cambios si ya está cerrado
+	    if ("CERRADO".equals(folio.getEstatusActual().getNombre())) {
+	        throw new IllegalStateException("El folio ya está cerrado");
 	    }
-	 
+
+	    // Crear historial
+	    HistorialEstatus historial = new HistorialEstatus();
+	    historial.setFolio(folio);
+	    historial.setEstatusAnterior(folio.getEstatusActual());
+	    historial.setEstatusNuevo(nuevoEstatus);
+	    historial.setUsuario(usuario);
+	    historial.setComentario(dto.getComentario());
+	    historial.setFechaCambio(LocalDateTime.now());
+
+	    historialEstatusRepository.save(historial);
+
+	    //LÓGICA ESPECIAL DE CIERRE
+	    if ("CERRADO".equals(nuevoEstatus.getNombre())) {
+
+	        if (dto.getCierre() == null) {
+	            throw new IllegalArgumentException("Información de cierre requerida");
+	        }
+
+	        if (dto.getCierre().getTotal() == null ||
+	            dto.getCierre().getTotal().compareTo(BigDecimal.ZERO) <= 0) {
+	            throw new IllegalArgumentException("El total debe ser mayor a 0");
+	        }
+
+	        CierreFolio cierre = new CierreFolio();
+	        cierre.setFolio(folio);
+	        cierre.setHistorialEstatus(historial);
+	        cierre.setUsoPiezas(dto.getCierre().getUsoPiezas());
+	        cierre.setManoObra(dto.getCierre().getManoObra());
+	        cierre.setTotal(dto.getCierre().getTotal());
+	        cierre.setFechaCierre(LocalDateTime.now());
+
+	        if (Boolean.TRUE.equals(dto.getCierre().getUsoPiezas())) {
+	            List<PiezaReparacion> piezas = dto.getCierre().getPiezas().stream().map(p -> {
+	                PiezaReparacion pieza = new PiezaReparacion();
+	                pieza.setDescripcion(p.getDescripcion());
+	                pieza.setCosto(p.getCosto());
+	                pieza.setCierreFolio(cierre);
+	                return pieza;
+	            }).toList();
+
+	            cierre.setPiezas(piezas);
+	        }
+
+	        cierreFolioRepository.save(cierre);
+	    }
+
+	    // Actualizar estatus del folio
+	    folio.setEstatusActual(nuevoEstatus);
+	    folioRepository.save(folio);
+
+	    return folio;
+	}
+
 	
 	 
 
@@ -268,28 +273,25 @@ public class FolioService {
 	    	    }
 
 	    	   
-	    	    List<HistorialEstatusDTO> avancesDelEstatusActual = historial.stream()
-	    	            // solo registros que son avances (estatusAnterior == estatusNuevo)
-	    	            .filter(h -> h.getEstatusAnterior() != null && h.getEstatusAnterior().equals(h.getEstatusNuevo()))
-	    	            // solo del estatus actual
-	    	            .filter(h -> h.getEstatusNuevo().equals(estatusActual))
-	    	            // ordenar por fecha (nulls al final)
-	    	            .sorted(Comparator.comparing(HistorialEstatusDTO::getFechaCambio,
-	    	                    Comparator.nullsLast(Comparator.naturalOrder())))
-
+	    	
+	    	    List<HistorialEstatusDTO> comentariosDelEstatusActual = historial.stream()
+	    	            .filter(h -> estatusActual.equals(h.getEstatusNuevo()))
+	    	            .sorted(Comparator.comparing(
+	    	                    HistorialEstatusDTO::getFechaCambio,
+	    	                    Comparator.nullsLast(Comparator.naturalOrder())
+	    	            ))
 	    	            .toList();
 	    	    
 	    	    
-	    	    if (avancesDelEstatusActual.isEmpty() && estatusActual != null) {
+	    	    if (comentariosDelEstatusActual.isEmpty()) {
 	    	        HistorialEstatusDTO dummy = new HistorialEstatusDTO();
 	    	        dummy.setEstatusAnterior(estatusActual);
 	    	        dummy.setEstatusNuevo(estatusActual);
 	    	        dummy.setComentario("No hay avances registrados todavía");
-	    	        avancesDelEstatusActual = List.of(dummy);
+	    	        return List.of(dummy);
 	    	    }
 
-
-	    	    return avancesDelEstatusActual;
+	    	    return comentariosDelEstatusActual;
 	    	
 	    }
 	 

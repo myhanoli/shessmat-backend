@@ -38,7 +38,7 @@ public class HistorialEstatus {
     private Usuario usuario;
 
     //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDate fechaCambio;
+    private LocalDateTime fechaCambio;
 
     private String comentario;
 
@@ -90,16 +90,25 @@ public class HistorialEstatus {
 
 	
 
-	public LocalDate getFechaCambio() {
+	/*public LocalDate getFechaCambio() {
 		return fechaCambio;
 	}
 
 	public void setFechaCambio(LocalDate fechaCambio) {
 		this.fechaCambio = fechaCambio;
-	}
+	}*/
+	
 
 	public String getComentario() {
 		return comentario;
+	}
+
+	public LocalDateTime getFechaCambio() {
+		return fechaCambio;
+	}
+
+	public void setFechaCambio(LocalDateTime fechaCambio) {
+		this.fechaCambio = fechaCambio;
 	}
 
 	public void setComentario(String comentario) {

@@ -1,7 +1,7 @@
 package com.hanoli.shessmat.dto;
 
-import java.time.LocalDate;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 public class HistorialEstatusDTO {
 	
@@ -9,14 +9,14 @@ public class HistorialEstatusDTO {
 	    private String estatusAnterior;
 	    private String estatusNuevo;
 	    private String usuario;
-	    private LocalDate fechaCambio;
+	    private LocalDateTime fechaCambio;
 	    private String comentario;
 
 	    
 	    public HistorialEstatusDTO() {}
 	    
 	    // Constructor
-	    public HistorialEstatusDTO(Long id, String estatusAnterior, String estatusNuevo, String usuario, LocalDate fechaCambio, String comentario) {
+	    public HistorialEstatusDTO(Long id, String estatusAnterior, String estatusNuevo, String usuario, LocalDateTime fechaCambio, String comentario) {
 	        this.id = id;
 	        this.estatusAnterior = estatusAnterior;
 	        this.estatusNuevo = estatusNuevo;
@@ -26,6 +26,8 @@ public class HistorialEstatusDTO {
 	    }
 
 	 
+
+	
 
 		// Getters y Setters
 	    public Long getId() { return id; }
@@ -40,17 +42,15 @@ public class HistorialEstatusDTO {
 	    public String getUsuario() { return usuario; }
 	    public void setUsuario(String usuario) { this.usuario = usuario; }
 
-	    
-
-	    public LocalDate getFechaCambio() {
+		public String getComentario() { return comentario; }
+	    public LocalDateTime getFechaCambio() {
 			return fechaCambio;
 		}
 
-		public void setFechaCambio(LocalDate fechaCambio) {
+		public void setFechaCambio(LocalDateTime fechaCambio) {
 			this.fechaCambio = fechaCambio;
 		}
 
-		public String getComentario() { return comentario; }
-	    public void setComentario(String comentario) { this.comentario = comentario; }
+		public void setComentario(String comentario) { this.comentario = comentario; }
 
 }

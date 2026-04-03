@@ -3,6 +3,7 @@ package com.hanoli.demojwt.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hanoli.demojwt.Auth.ClienteRequest;
-import com.hanoli.demojwt.User.Role;
 import com.hanoli.demojwt.entity.Usuario;
 import com.hanoli.demojwt.sevicesImpl.ClienteServiceImpl;
 import com.hanoli.demojwt.sevicesImpl.UsuarioServiceImpl;
@@ -61,7 +61,8 @@ public class UsuariosRestController {
 	            .telefono(cliente.getTelefono())
 	            .username(cliente.getUsername())
 	            .password(passwordEncoder.encode( cliente.getPassword()))
-	            .role(Role.USER)
+	            .roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+	            .email(cliente.getEmail())
 	            .build();
 		try {
 			usuariosImpl.guardaUsuario(clte);	
@@ -103,6 +104,8 @@ public class UsuariosRestController {
 				            .telefono(cliente.getTelefono())
 				            .username(cliente.getUsername())
 				            .password(passwordEncoder.encode( cliente.getPassword()))
+				            .roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+				            .email(cliente.getEmail())
 				            .build();
 					
 					try {

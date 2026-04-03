@@ -14,17 +14,16 @@ public class UserService {
     @Transactional
     public UserResponse updateUser(UserRequest userRequest) {
        
-        User user = User.builder()
-        .id(userRequest.id)
-        .firstname(userRequest.getFirstname())
-        .lastname(userRequest.lastname)
-        .country(userRequest.getCountry())
-        .role(Role.USER)
+        Usuario user = Usuario.builder()
+        .id((long)userRequest.getId())
+        .nombre(userRequest.getNombre())
+        .apellidoPat(userRequest.getApellidoPat())
+        .apellidoMat(userRequest.getApellidoMat())
         .build();
         
-        userRepository.updateUser(user.id, user.firstname, user.lastname, user.country);
+        userRepository.updateUser(user.getId().intValue(), user.getNombre(), user.getApellidoPat(), user.getApellidoMat());
 
-        return new UserResponse("El usuario se registró satisfactoriamente");
+        return new UserResponse("El usuario se actualizó satisfactoriamente");
     }
 
     public UserDTO2 getUser(Integer id) {

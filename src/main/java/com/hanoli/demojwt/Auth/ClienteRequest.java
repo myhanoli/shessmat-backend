@@ -21,4 +21,5 @@ public class ClienteRequest {
 	private String username;
 	private String password;
 	private String rol;
+	private String email;
 }

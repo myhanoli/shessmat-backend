@@ -2,6 +2,7 @@ package com.hanoli.demojwt.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,8 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -39,12 +38,12 @@ public class User implements UserDetails {
     String firstname;
     String country;
     String password;
-    @Enumerated(EnumType.STRING) 
-    Role role;
+    String email;
+    Set<String> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      return List.of(new SimpleGrantedAuthority((role.name())));
+      return roles.stream().map(SimpleGrantedAuthority::new).toList();
     }
     @Override
     public boolean isAccountNonExpired() {

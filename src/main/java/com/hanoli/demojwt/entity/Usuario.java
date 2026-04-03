@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,8 +30,6 @@ import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hanoli.demojwt.User.Role;
-import com.hanoli.demojwt.User.User;
 
 @Data
 @Builder
@@ -64,13 +65,15 @@ public class Usuario implements Serializable, UserDetails{
 	private String username;
 	@JsonProperty("password")
 	private String password;
-	@JsonProperty("role")
-	private @Enumerated(EnumType.STRING) 
-    Role role;
+	@JsonProperty("roles")
+	@Convert(converter = RolesConverter.class)
+	private Set<String> roles;
+	@JsonProperty("email")
+	private String email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      return List.of(new SimpleGrantedAuthority((role.name())));
+      return roles != null ? roles.stream().map(SimpleGrantedAuthority::new).toList() : List.of();
     }
     
     

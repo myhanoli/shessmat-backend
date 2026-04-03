@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<Usuario,Integer> {
     Optional<Usuario> findByUsername(String username); 
     
     @Modifying()
-    @Query("update User u set u.firstname=:firstname, u.lastname=:lastname, u.country=:country where u.id = :id")
-    void updateUser(@Param(value = "id") Integer id,   @Param(value = "firstname") String firstname, @Param(value = "lastname") String lastname , @Param(value = "country") String country);
+    @Query("update Usuario u set u.nombre=:nombre, u.apellidoPat=:apellidoPat, u.apellidoMat=:apellidoMat where u.id = :id")
+    void updateUser(@Param(value = "id") Integer id,   @Param(value = "nombre") String nombre, @Param(value = "apellidoPat") String apellidoPat, @Param(value = "apellidoMat") String apellidoMat);
 
 }

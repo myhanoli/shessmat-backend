@@ -16,7 +16,7 @@ import java.util.Map;
 public class CloudinaryService {
 	
 
-    private final Cloudinary cloudinary;
+   /* private final Cloudinary cloudinary;
 
     public CloudinaryService(
             @Value("${cloudinary.cloud_name}") String cloudName,
@@ -47,5 +47,5 @@ public class CloudinaryService {
             urls.add(uploadFile(file, folio));
         }
         return urls;
-    }
+    }*/
 }

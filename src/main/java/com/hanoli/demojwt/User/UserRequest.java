@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class UserRequest {
     int id;
     String username;
-    String firstname;
-    String lastname;
+    String nombre;
+    String apellidoPat;
+    String apellidoMat;
     String country;
 }

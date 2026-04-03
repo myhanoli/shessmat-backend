@@ -68,8 +68,8 @@ public class FoliosRestController {
 	@Autowired
     ImagenService imagenService;
 	
-	 @Autowired
-	 private CloudinaryService cloudinaryService;
+	 /*@Autowired
+	 private CloudinaryService cloudinaryService;*/
 	
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
@@ -166,7 +166,7 @@ public class FoliosRestController {
 	}
 	
 	
-	@PostMapping("/upload")
+	/*@PostMapping("/upload")
     public ResponseEntity<?> uploadFiles(
             @RequestParam("files") MultipartFile[] files,
             @RequestParam("folio") String folio) {
@@ -188,13 +188,11 @@ public class FoliosRestController {
             message = "100";
             return ResponseEntity.status(HttpStatus.OK).body(new FileMessage(message));
         } catch (Exception e) {
-            /*e.printStackTrace();
-            return ResponseEntity.internalServerError()
-                    .body("Error al subir las imágenes: " + e.getMessage());*/
+
         	 message = "-1";
 	            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FileMessage(message));
         }
-    }
+    }*/
      
 	// @ApiOperation(value = "getEndFolio", notes = "Obtiene el ultimo folio generado")
 		@GetMapping("/getEndFolio")

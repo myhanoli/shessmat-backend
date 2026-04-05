@@ -1,6 +1,7 @@
 package com.hanoli.demojwt.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -299,7 +300,6 @@ public class FoliosRestController {
 			
 		}
 		
-		
 		 @PostMapping("/seguimiento")
 		    public ResponseEntity<FolioResponseDTO> actualizarEstatus(
 		            @RequestBody SeguimientoFolioDTO dto) { // usuario logueado
@@ -313,5 +313,51 @@ public class FoliosRestController {
 		        List<HistorialEstatusDTO> historial = folioService.getHistorialPorFolio(folioId);
 		        return ResponseEntity.ok(historial);
 		    }
-	
+
+	 	// NUEVO: Endpoint para obtener y descargar el ticket PDF
+	 	@GetMapping("folios/{folioId}/ticket")
+	 	public ResponseEntity<?> descargarTicket(@PathVariable Long folioId) {
+			System.out.println("Llegue a descargarTicket" + folioId);
+	 		try {
+	 			Folio folio = folioService.folioId(folioId);
+
+	 			if (folio == null) {
+	 				Map<String, Object> response = new HashMap<>();
+	 				response.put("mensaje", "Folio no encontrado");
+	 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	 			}
+
+	 			// Si no existe ticket, generarlo
+	 			if (folio.getRutaTicket() == null || folio.getRutaTicket().isEmpty()) {
+	 				folioService.generarTicketPdf(folioId);
+	 				folio = folioService.folioId(folioId); // Recargar folio actualizado
+	 			}
+
+	 			// Crear archivo a partir de la ruta guardada
+	 			File file = new File(folio.getRutaTicket());
+
+	 			if (!file.exists()) {
+	 				Map<String, Object> response = new HashMap<>();
+	 				response.put("mensaje", "Archivo PDF no encontrado en servidor");
+	 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	 			}
+
+	 			// Descargar el archivo
+	 			InputStreamResource resource = new InputStreamResource(new java.io.FileInputStream(file));
+	 			HttpHeaders headers = new HttpHeaders();
+	 			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + folio.getFolio() + ".pdf");
+	 			headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE);
+
+	 			return ResponseEntity.ok()
+	 					.headers(headers)
+	 					.contentType(MediaType.APPLICATION_PDF)
+	 					.body(resource);
+
+	 		} catch (Exception e) {
+	 			Map<String, Object> response = new HashMap<>();
+	 			response.put("mensaje", "Error al descargar ticket: " + e.getMessage());
+	 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	 		}
+	 	}
+
 }

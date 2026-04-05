@@ -24,6 +24,11 @@ target/
 *.iml
 *.ipr
 
+### Copilot ###
+
+*.md
+*.json
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "Shessmat - Test de Tickets PDF",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Descargar Ticket PDF",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/1/ticket",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "1", "ticket"]
+        },
+        "description": "Descarga el PDF del ticket para el folio con ID 1.\nSi no existe, se genera automáticamente."
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Folio por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/idFolio/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "idFolio", "1"]
+        },
+        "description": "Obtiene los detalles del folio incluyendo ruta_ticket y fecha_ticket"
+      },
+      "response": []
+    }
+  ]
+}
+

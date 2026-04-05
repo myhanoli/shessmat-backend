@@ -7,6 +7,8 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -68,8 +70,16 @@ public class Folio implements Serializable{
     @JsonManagedReference
     private List<HistorialEstatus> historial;
 
-
+    // CAMPOS PARA DIAGNÓSTICO
+    @Enumerated(EnumType.STRING)
+    private ResultadoDiagnostico resultadoDiagnostico;
     
+    private java.time.LocalDateTime fechaDiagnostico;
+    
+    // CAMPOS PARA TICKET PDF
+    private String rutaTicket;
+    private java.time.LocalDateTime fechaTicket;
+
 
     // ------------------ Getters y Setters ------------------
     
@@ -129,7 +139,31 @@ public class Folio implements Serializable{
 	public void setHistorial(List<HistorialEstatus> historial) {
 		this.historial = historial;
 	}
-    
+	public ResultadoDiagnostico getResultadoDiagnostico() {
+		return resultadoDiagnostico;
+	}
+	public void setResultadoDiagnostico(ResultadoDiagnostico resultadoDiagnostico) {
+		this.resultadoDiagnostico = resultadoDiagnostico;
+	}
+	public java.time.LocalDateTime getFechaDiagnostico() {
+		return fechaDiagnostico;
+	}
+	public void setFechaDiagnostico(java.time.LocalDateTime fechaDiagnostico) {
+		this.fechaDiagnostico = fechaDiagnostico;
+	}
+	public String getRutaTicket() {
+		return rutaTicket;
+	}
+	public void setRutaTicket(String rutaTicket) {
+		this.rutaTicket = rutaTicket;
+	}
+	public java.time.LocalDateTime getFechaTicket() {
+		return fechaTicket;
+	}
+	public void setFechaTicket(java.time.LocalDateTime fechaTicket) {
+		this.fechaTicket = fechaTicket;
+	}
+
     
     
 }

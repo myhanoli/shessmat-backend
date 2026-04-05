@@ -21,6 +21,7 @@ import com.hanoli.demojwt.entity.FoliosAprobados;
 import com.hanoli.demojwt.entity.HistorialEstatus;
 import com.hanoli.demojwt.entity.PiezaReparacion;
 import com.hanoli.demojwt.entity.Usuario;
+import com.hanoli.demojwt.entity.ResultadoDiagnostico;
 import com.hanoli.demojwt.repository.CierreFolioRepository;
 import com.hanoli.demojwt.repository.ClienteRepository;
 import com.hanoli.demojwt.repository.EstatusRepository;
@@ -56,6 +57,9 @@ public class FolioService {
 	@Autowired
 	CierreFolioRepository cierreFolioRepository;
 	
+	@Autowired
+	TicketPdfService ticketPdfService;
+
 
 	public List<FolioResponseDTO> getLista() {
 	    List<Folio> folios = folioRepository.findAll();
@@ -236,6 +240,17 @@ public class FolioService {
 
 	    // Actualizar estatus del folio
 	    folio.setEstatusActual(nuevoEstatus);
+
+	    // NUEVO: Guardar resultado del diagnóstico si viene en el request
+	    if (dto.getResultadoDiagnostico() != null && !dto.getResultadoDiagnostico().isEmpty()) {
+	        try {
+	            folio.setResultadoDiagnostico(ResultadoDiagnostico.valueOf(dto.getResultadoDiagnostico().toUpperCase()));
+	            folio.setFechaDiagnostico(LocalDateTime.now());
+	        } catch (IllegalArgumentException e) {
+	            throw new IllegalArgumentException("Resultado de diagnóstico inválido: " + dto.getResultadoDiagnostico());
+	        }
+	    }
+
 	    folioRepository.save(folio);
 
 	    return folio;
@@ -295,7 +310,24 @@ public class FolioService {
 	    	
 	    }
 	 
+	    // NUEVO: Método para generar y descargar el PDF del ticket
+	    public void generarTicketPdf(Long folioId) {
+	        Folio folio = folioRepository.findById(folioId)
+	                .orElseThrow(() -> new RuntimeException("Folio no encontrado"));
 
+	        try {
+	            // Generar PDF
+	            String rutaPdf = ticketPdfService.generateTicketPdf(folio);
+
+	            // Actualizar el folio con la ruta y fecha del ticket
+	            folio.setRutaTicket(rutaPdf);
+	            folio.setFechaTicket(LocalDateTime.now());
+	            folioRepository.save(folio);
+
+	        } catch (Exception e) {
+	            throw new RuntimeException("Error al generar ticket PDF: " + e.getMessage(), e);
+	        }
+	    }
 
 	    
 }

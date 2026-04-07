@@ -59,7 +59,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://shessmat-frontend.vercel.app","https://shessmat-frontend-git-develop-hans-projects-604cd50d.vercel.app","https://shessmat-frontend-lpbegdr4v-hans-projects-604cd50d.vercel.app","http://localhost:4200" )); // Solo tu frontend
+        config.setAllowedOrigins(List.of("https://shessmat-frontend.vercel.app","https://shessmat-frontend-git-develop-hans-projects-604cd50d.vercel.app","https://shessmat-frontend-hsmicrbrx-hans-projects-604cd50d.vercel.app/","http://localhost:4200" )); // Solo tu frontend
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

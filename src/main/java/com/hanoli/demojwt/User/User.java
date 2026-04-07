@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Table(name="user", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     @Basic
     @Column(nullable = false)

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Converter(autoApply = false)
 public class RolesConverter implements AttributeConverter<Set<String>, String> {
-
+    
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

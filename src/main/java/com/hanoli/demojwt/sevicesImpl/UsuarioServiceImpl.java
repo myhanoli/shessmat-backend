@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 
 
 import com.hanoli.demojwt.repository.UsuarioRepository;
-import com.hanoli.demojwt.User.Role;
-import com.hanoli.demojwt.User.User;
 import com.hanoli.demojwt.entity.Usuario;
-import com.hanoli.demojwt.services.IClienteService;
 import com.hanoli.demojwt.services.IUsuarioService;
 
 

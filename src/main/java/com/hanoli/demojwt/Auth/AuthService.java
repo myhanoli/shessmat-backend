@@ -25,50 +25,50 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-    	System.out.println("password:" + request.getPassword());
+        System.out.println("password:" + request.getPassword());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         Usuario userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
         UserDTO userDTO = UserDTO.builder()
-            .id(userEntity.getId())
-            .email(userEntity.getEmail())
-            .name(userEntity.getNombre() + " " + userEntity.getApellidoPat() + " " + userEntity.getApellidoMat())
-            .roles(userEntity.getRoles() != null ? new ArrayList<>(userEntity.getRoles()) : List.of())
-            .build();
+                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .name(userEntity.getNombre() + " " + userEntity.getApellidoPat() + " " + userEntity.getApellidoMat())
+                .roles(userEntity.getRoles() != null ? new ArrayList<>(userEntity.getRoles()) : List.of())
+                .build();
         String token = jwtService.getToken(userEntity);
         return AuthResponse.builder()
-        	.user(userDTO)
-            .token(token)
-            .expiresIn(jwtService.getExpiresIn())
-            .build();
+                .user(userDTO)
+                .token(token)
+                .expiresIn(jwtService.getExpiresIn())
+                .build();
 
     }
-    
+
 
 
     public AuthResponse register(RegisterRequest request) {
         Usuario user = Usuario.builder()
-            .username(request.getUsername())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .nombre(request.getFirstname())
-            .apellidoPat(request.getLastname())
-            .email(request.getEmail())
-            .roles(Set.of("user"))
-            .build();
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .nombre(request.getFirstname())
+                .apellidoPat(request.getLastname())
+                .email(request.getEmail())
+                .roles(Set.of("user"))
+                .build();
 
         userRepository.save(user);
 
         UserDTO userDTO = UserDTO.builder()
-            .id(user.getId())
-            .email(user.getEmail())
-            .name(user.getNombre() + " " + user.getApellidoPat() + " " + user.getApellidoMat())
-            .roles(new ArrayList<>(user.getRoles()))
-            .build();
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getNombre() + " " + user.getApellidoPat() + " " + user.getApellidoMat())
+                .roles(new ArrayList<>(user.getRoles()))
+                .build();
 
         return AuthResponse.builder()
-            .user(userDTO)
-            .token(jwtService.getToken(user))
-            .expiresIn(jwtService.getExpiresIn())
-            .build();
-        
+                .user(userDTO)
+                .token(jwtService.getToken(user))
+                .expiresIn(jwtService.getExpiresIn())
+                .build();
+
     }
 }

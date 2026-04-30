@@ -23,6 +23,9 @@ public class FolioRequestDTO {
     private Long clienteId;
     private Long idEstatus;
     
+    // Observaciones
+    private String observaciones;
+
 	public String getFolio() {
 		return folio;
 	}
@@ -106,7 +109,13 @@ public class FolioRequestDTO {
 	public void setIdEstatus(Long idEstatus) {
 		this.idEstatus = idEstatus;
 	}
-    
+	public String getObservaciones() {
+		return observaciones;
+	}
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
+
     
     
 

@@ -86,7 +86,7 @@ public class TicketPdfService {
         addSection(document, "ACCESORIOS");
         PdfPTable accesorios = createTable();
 
-        accesorios.addCell(createCell("Incluye cargador:", true));
+        accesorios.addCell(createCell("Entrega cargador:", true));
         accesorios.addCell(createCell(
                 folio.getTraeCargador() != null && folio.getTraeCargador() ? "Sí" : "No",
                 false
@@ -102,6 +102,43 @@ public class TicketPdfService {
 
         document.add(accesorios);
 
+
+        // ===== ENCENDIDO =====
+        addSection(document, "ESTADO DEL EQUIPO");
+        PdfPTable encendido = createTable();
+
+        encendido.addCell(createCell("Viene Encendido:", true));
+        encendido.addCell(createCell(
+                folio.getEncendido() != null && folio.getEncendido() ? "Sí" : "No",
+                false
+        ));
+
+        /*if (Boolean.TRUE.equals(folio.getEncendido())) {
+            encendido.addCell(createCell("Marca cargador:", true));
+            encendido.addCell(createCell(folio.getMarcaCargador(), false));
+
+            encendido.addCell(createCell("Serie cargador:", true));
+            encendido.addCell(createCell(folio.getNumSerieCargador(), false));
+        }*/
+
+        document.add(encendido);
+
+        // ===== COMENTARIOS =====
+        addSection(document, "DESCRIPCION DE FALLA POR CLIENTE");
+        PdfPTable com = new PdfPTable(1);
+        com.setWidthPercentage(85);
+        com.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell comCell = new PdfPCell(new Phrase(
+                folio.getComentarios() != null ? folio.getComentarios() : "Sin descripcion",
+                NORMAL_FONT
+        ));
+        comCell.setPadding(8);
+        comCell.setBorderColor(BaseColor.LIGHT_GRAY);
+
+        com.addCell(comCell);
+        document.add(com);
+
         // ===== OBSERVACIONES =====
         addSection(document, "OBSERVACIONES");
         PdfPTable obs = new PdfPTable(1);
@@ -109,7 +146,7 @@ public class TicketPdfService {
         obs.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         PdfPCell obsCell = new PdfPCell(new Phrase(
-                folio.getComentarios() != null ? folio.getComentarios() : "Sin observaciones",
+                folio.getObservaciones() != null ? folio.getObservaciones() : "Sin observaciones",
                 NORMAL_FONT
         ));
         obsCell.setPadding(8);

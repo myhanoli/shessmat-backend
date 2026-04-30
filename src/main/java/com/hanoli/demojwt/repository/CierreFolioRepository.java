@@ -22,5 +22,5 @@ public interface CierreFolioRepository extends JpaRepository<CierreFolio, Long> 
 
     @Query("SELECT cf FROM CierreFolio cf WHERE cf.fechaCierre BETWEEN :startDate AND :endDate")
     List<CierreFolio> findByFechaCierreBetween(@Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
+                                               @Param("endDate") LocalDateTime endDate);
 }

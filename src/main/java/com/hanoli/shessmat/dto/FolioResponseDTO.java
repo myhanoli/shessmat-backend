@@ -28,7 +28,7 @@ public class FolioResponseDTO {
     private String clienteNombre;
     
     private EstatusDTO estatusActual;
-    
+	private String observaciones;
     public FolioResponseDTO() {
     }
 
@@ -46,6 +46,7 @@ public class FolioResponseDTO {
         this.traeCargador = folio.getTraeCargador();
         this.marcaCargador = folio.getMarcaCargador();
         this.numSerieCargador = folio.getNumSerieCargador();
+		this.observaciones = folio.getObservaciones();
 
         if (folio.getCliente() != null) {
             this.clienteId = folio.getCliente().getId();
@@ -180,7 +181,12 @@ public class FolioResponseDTO {
 	    public void setEstatusActual(EstatusDTO estatusActual) {
 	        this.estatusActual = estatusActual;
 	    }
-    
-    
-	
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
 }

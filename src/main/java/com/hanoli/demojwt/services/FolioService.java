@@ -100,6 +100,7 @@ public class FolioService {
         folio.setTraeCargador(dto.getTraeCargador());
         folio.setMarcaCargador(dto.getMarcaCargador());
         folio.setNumSerieCargador(dto.getNumSerieCargador());
+        folio.setObservaciones(dto.getObservaciones());
 
         //Relación Cliente
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
@@ -143,6 +144,7 @@ public class FolioService {
 	    folio.setTraeCargador(dto.getTraeCargador());
 	    folio.setMarcaCargador(dto.getMarcaCargador());
 	    folio.setNumSerieCargador(dto.getNumSerieCargador());
+	    folio.setObservaciones(dto.getObservaciones());
 
 	    Cliente cliente = clienteRepository.findById(dto.getClienteId())
 	            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));

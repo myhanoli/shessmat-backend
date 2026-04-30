@@ -34,111 +34,111 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UsuariosRestController {
-	
-	 private final PasswordEncoder passwordEncoder;
+
+	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UsuarioServiceImpl usuariosImpl;
-	
+
 	@GetMapping("/listUser")
 	public List<Usuario> getUsuarios(){
 		return usuariosImpl.getLista();
 	}
-	
-	
+
+
 	@PostMapping("/saveUser")
 	public ResponseEntity<?> guardaUsuario(@RequestBody ClienteRequest cliente ) {
-	
+
 		System.out.println("[Method Save]" );
 		Map<String,Object> response = new HashMap<>();
-		
+
 		Usuario clte = Usuario.builder()
 				.id(cliente.getId())
-	            .nombre(cliente.getNombre())
-	            .apellidoPat(cliente.getApellidoPat())
-	            .apellidoMat(cliente.getApellidoMat())
-	            .direccion(cliente.getDireccion())
-	            .telefono(cliente.getTelefono())
-	            .username(cliente.getUsername())
-	            .password(passwordEncoder.encode( cliente.getPassword()))
-	            .roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
-	            .email(cliente.getEmail())
-	            .build();
+				.nombre(cliente.getNombre())
+				.apellidoPat(cliente.getApellidoPat())
+				.apellidoMat(cliente.getApellidoMat())
+				.direccion(cliente.getDireccion())
+				.telefono(cliente.getTelefono())
+				.username(cliente.getUsername())
+				.password(passwordEncoder.encode( cliente.getPassword()))
+				.roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+				.email(cliente.getEmail())
+				.build();
 		try {
-			usuariosImpl.guardaUsuario(clte);	
+			usuariosImpl.guardaUsuario(clte);
 		}catch (Exception e) {
 			response.put("mensaje", "Hubo un problema al guardar el cliente");
 			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		response.put("mensaje", "El cliente se guardo con exito");
 		return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
-		
+
 	}
-	
+
 	@PutMapping("/updateUser/{id}")
 	public ResponseEntity<?> actualizaUsuario(@PathVariable Long id,@RequestBody ClienteRequest cliente){
 		System.out.println("[Method Update]" );
 		System.out.println("IdCliente: " + id);
-	
+
 		Map<String,Object> response = new HashMap<>();
-		
+
 		try {
-			
-			Usuario dataClte = usuariosImpl.usuarioId(id);	
-			
+
+			Usuario dataClte = usuariosImpl.usuarioId(id);
+
 			if(dataClte == null) {
 				System.out.println("Cliente no existe");
-				
+
 				response.put("mensaje", "No se encontro cliente");
 				return new ResponseEntity<Map<String,Object>>(response, HttpStatus.NOT_FOUND);
-				
-				}else {
-					
-					Usuario clte = Usuario.builder()
-							.id(cliente.getId())
-							.nombre(cliente.getNombre())
-				            .apellidoPat(cliente.getApellidoPat())
-				            .apellidoMat(cliente.getApellidoMat())
-				            .direccion(cliente.getDireccion())
-				            .telefono(cliente.getTelefono())
-				            .username(cliente.getUsername())
-				            .password(passwordEncoder.encode( cliente.getPassword()))
-				            .roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
-				            .email(cliente.getEmail())
-				            .build();
-					
-					try {
-						
-						usuariosImpl.updateUsuariobyId(clte);
-						
-						System.out.println("El cliente se actualizo con exito");
-						response.put("mensaje", "El cliente se actualizo con exito");
-						return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
-						
-					}catch (Exception e) {
-						System.out.println("Exception: " + e.getMessage());
-						response.put("mensaje", "Hubo un problema al actualizar el cliente ");
-						return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-					}
-		
+
+			}else {
+
+				Usuario clte = Usuario.builder()
+						.id(cliente.getId())
+						.nombre(cliente.getNombre())
+						.apellidoPat(cliente.getApellidoPat())
+						.apellidoMat(cliente.getApellidoMat())
+						.direccion(cliente.getDireccion())
+						.telefono(cliente.getTelefono())
+						.username(cliente.getUsername())
+						.password(passwordEncoder.encode( cliente.getPassword()))
+						.roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+						.email(cliente.getEmail())
+						.build();
+
+				try {
+
+					usuariosImpl.updateUsuariobyId(clte);
+
+					System.out.println("El cliente se actualizo con exito");
+					response.put("mensaje", "El cliente se actualizo con exito");
+					return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
+
+				}catch (Exception e) {
+					System.out.println("Exception: " + e.getMessage());
+					response.put("mensaje", "Hubo un problema al actualizar el cliente ");
+					return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-			
+
+			}
+
 		}catch (Exception e) {
 			response.put("mensaje", "Hubo un problema al buscar el cliente por Id");
 			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
+
+
 	@DeleteMapping("/deleteUser/{id}")
 	public void eliminaUsuario(@PathVariable Long id) {
 		System.out.println("[Method Delete]" );
 		System.out.println("IdClient:" + id );
 		usuariosImpl.Eliminar(id);
-		
+
 	}
-	
-	
-	
+
+
+
 }

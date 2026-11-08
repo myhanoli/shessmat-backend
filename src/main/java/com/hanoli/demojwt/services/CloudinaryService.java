@@ -8,15 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class CloudinaryService {
-	
 
-   /* private final Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
     public CloudinaryService(
             @Value("${cloudinary.cloud_name}") String cloudName,
@@ -30,14 +28,17 @@ public class CloudinaryService {
         ));
     }
 
- 
     // Subir una sola imagen
     public String uploadFile(MultipartFile file, String folio) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                 "public_id", folio + "_" + System.currentTimeMillis(),
                 "folder", "imagenes_folio"
         ));
-        return uploadResult.get("secure_url").toString();
+        Object secureUrl = uploadResult.get("secure_url");
+        if (secureUrl == null) {
+            throw new IOException("Cloudinary no devolvió la URL segura de la imagen");
+        }
+        return secureUrl.toString();
     }
 
     // Subir múltiples imágenes
@@ -47,5 +48,5 @@ public class CloudinaryService {
             urls.add(uploadFile(file, folio));
         }
         return urls;
-    }*/
+    }
 }

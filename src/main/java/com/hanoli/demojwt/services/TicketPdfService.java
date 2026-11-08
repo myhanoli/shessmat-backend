@@ -2,17 +2,28 @@ package com.hanoli.demojwt.services;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hanoli.demojwt.entity.Folio;
+import com.hanoli.demojwt.entity.Imagen;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
 @Service
 public class TicketPdfService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TicketPdfService.class);
     private static final String TICKETS_DIR = "tickets";
 
     private static final Font TITLE_FONT = new Font(Font.FontFamily.HELVETICA, 13, Font.BOLD);
@@ -25,6 +36,9 @@ public class TicketPdfService {
     private static final Font COMPANY_FONT = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, PRIMARY_COLOR);
     private static final Font SUBTITLE_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.DARK_GRAY);
     private static final Font SECTION_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+
+    @Autowired
+    private ImagenService imagenService;
 
     public String generateTicketPdf(Folio folio) throws Exception {
 
@@ -155,8 +169,48 @@ public class TicketPdfService {
         obs.addCell(obsCell);
         document.add(obs);
 
+        addEquipmentImages(document, folio.getFolio());
+
         document.close();
         return filePath;
+    }
+
+    private void addEquipmentImages(Document document, String folioNumber) throws Exception {
+        List<Imagen> imagenes = imagenService.getImagenByFolio(folioNumber);
+        List<Image> imagesToAdd = new ArrayList<>();
+
+        for (Imagen imagen : imagenes) {
+            try {
+                URL url = new URL(imagen.getImagen());
+                if (!"https".equalsIgnoreCase(url.getProtocol())
+                        || !"res.cloudinary.com".equalsIgnoreCase(url.getHost())) {
+                    throw new IOException("La URL de imagen no pertenece a Cloudinary");
+                }
+
+                URLConnection connection = url.openConnection();
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(10000);
+                try (InputStream input = connection.getInputStream()) {
+                    Image image = Image.getInstance(input.readAllBytes());
+                    image.scaleToFit(480, 360);
+                    image.setAlignment(Element.ALIGN_CENTER);
+                    imagesToAdd.add(image);
+                }
+            } catch (Exception e) {
+                LOGGER.warn("No se pudo cargar la imagen {} del folio {} para el ticket", imagen.getId(), folioNumber, e);
+            }
+        }
+
+        if (imagesToAdd.isEmpty()) {
+            return;
+        }
+
+        addSection(document, "IMÁGENES DEL EQUIPO");
+        for (Image image : imagesToAdd) {
+            image.setSpacingBefore(8);
+            image.setSpacingAfter(8);
+            document.add(image);
+        }
     }
 
     private void addCompanyHeader(Document document) throws Exception {

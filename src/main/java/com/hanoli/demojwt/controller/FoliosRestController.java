@@ -69,8 +69,8 @@ public class FoliosRestController {
 	@Autowired
     ImagenService imagenService;
 	
-	 /*@Autowired
-	 private CloudinaryService cloudinaryService;*/
+	@Autowired
+	private CloudinaryService cloudinaryService;
 	
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
@@ -194,6 +194,38 @@ public class FoliosRestController {
 	            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FileMessage(message));
         }
     }*/
+	@PostMapping(
+			value = "/upload",
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+	)
+	public ResponseEntity<?> uploadFiles(
+			@RequestParam("files") MultipartFile[] files,
+			@RequestParam("folio") String folio) {
+
+		try {
+			System.out.println("Folio: " + folio);
+			System.out.println("Archivos recibidos: " + files.length);
+
+			List<String> urls = cloudinaryService.uploadFiles(files, folio);
+
+			for (String url : urls) {
+				Imagen img = new Imagen();
+				img.setFolio(folio);
+				img.setImagen(url);
+				imagenService.guardaImagen(img);
+			}
+
+			folioService.invalidarTicketPorFolio(folio);
+
+			return ResponseEntity.ok(new FileMessage("100"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new FileMessage("-1"));
+		}
+	}
      
 	// @ApiOperation(value = "getEndFolio", notes = "Obtiene el ultimo folio generado")
 		@GetMapping("/getEndFolio")

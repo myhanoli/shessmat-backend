@@ -331,5 +331,13 @@ public class FolioService {
 	        }
 	    }
 
+	    public void invalidarTicketPorFolio(String folioNumber) {
+	        folioRepository.findByFolio(folioNumber).ifPresent(folio -> {
+	            folio.setRutaTicket(null);
+	            folio.setFechaTicket(null);
+	            folioRepository.save(folio);
+	        });
+	    }
+
 	    
 }

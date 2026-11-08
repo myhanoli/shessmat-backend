@@ -1,6 +1,7 @@
 package com.hanoli.demojwt.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,8 @@ import com.hanoli.demojwt.services.FolioServiceCustom;
 
 
 public interface FolioRepository extends JpaRepository<Folio, Long>, FolioServiceCustom{
+
+	Optional<Folio> findByFolio(String folio);
 	
 	/*@Query("SELECT MAX(f.folio) FROM Folio f")
 	 String getEndFolio();*/

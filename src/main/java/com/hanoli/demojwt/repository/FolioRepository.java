@@ -15,6 +15,8 @@ import com.hanoli.demojwt.services.FolioServiceCustom;
 public interface FolioRepository extends JpaRepository<Folio, Long>, FolioServiceCustom{
 
 	Optional<Folio> findByFolio(String folio);
+
+	List<Folio> findByClienteIdOrderByFechaDesc(Long clienteId);
 	
 	/*@Query("SELECT MAX(f.folio) FROM Folio f")
 	 String getEndFolio();*/

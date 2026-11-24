@@ -33,6 +33,7 @@ import com.hanoli.shessmat.dto.HistorialEstatusDTO;
 import com.hanoli.shessmat.dto.SeguimientoFolioDTO;
 import com.hanoli.shessmat.dto.FolioFiltrosDTO;
 import com.hanoli.shessmat.dto.FolioRequestDTO;
+import com.hanoli.shessmat.dto.ReparacionClienteDTO;
 
 
 
@@ -76,6 +77,57 @@ public class FolioService {
 	
 	public List<FoliosAprobados> getListaAprobados(){
 		return foliosAprobadosRepository.findAll();
+	}
+
+	public List<ReparacionClienteDTO> getFoliosPorCliente(Long clienteId) {
+		clienteRepository.findById(clienteId)
+				.orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+		return folioRepository.findByClienteIdOrderByFechaDesc(clienteId)
+				.stream()
+				.map(this::mapearReparacionCliente)
+				.toList();
+	}
+
+	private ReparacionClienteDTO mapearReparacionCliente(Folio folio) {
+		ReparacionClienteDTO dto = new ReparacionClienteDTO();
+		dto.setCotizacionAprobada(false);
+		dto.setClienteId(folio.getCliente().getId());
+		dto.setFolioId(folio.getId());
+		dto.setFolio(folio.getFolio());
+		dto.setFecha(folio.getFecha());
+		dto.setTipoEquipo(folio.getTipoEquipo());
+		dto.setMarca(folio.getMarca());
+		dto.setModelo(folio.getModelo());
+		dto.setComentarios(folio.getComentarios());
+
+		if (folio.getEstatusActual() != null) {
+			dto.setEstatus(folio.getEstatusActual().getNombre());
+			dto.setEstatusId(folio.getEstatusActual().getId());
+			dto.setProgreso(calcularProgreso(folio.getEstatusActual().getOrden()));
+		}
+
+		cierreFolioRepository.findByFolioId(folio.getId()).ifPresent(cierre -> {
+			dto.setCotizacion(cierre.getTotal());
+			dto.setCotizacionAprobada(true);
+		});
+
+		historialEstatusRepository.findByFolioIdOrderByFechaCambioAsc(folio.getId())
+				.stream()
+				.reduce((primero, ultimo) -> ultimo)
+				.ifPresent(historial -> dto.setUltimoComentario(historial.getComentario()));
+
+		return dto;
+	}
+
+	private Integer calcularProgreso(Integer orden) {
+		if (orden == null) {
+			return 0;
+		}
+		if (orden <= 1) return 25;
+		if (orden == 2) return 50;
+		if (orden == 3) return 75;
+		return 100;
 	}
 	
 	public Folio folioId(Long Id) {

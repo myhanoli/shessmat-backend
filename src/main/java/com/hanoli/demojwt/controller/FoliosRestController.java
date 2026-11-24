@@ -45,6 +45,7 @@ import com.hanoli.shessmat.dto.HistorialEstatusDTO;
 import com.hanoli.shessmat.dto.SeguimientoFolioDTO;
 import com.hanoli.shessmat.dto.FolioFiltrosDTO;
 import com.hanoli.shessmat.dto.FolioRequestDTO;
+import com.hanoli.shessmat.dto.ReparacionClienteDTO;
 
 /*import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;*/
@@ -72,6 +73,24 @@ public class FoliosRestController {
 	@Autowired
 	private CloudinaryService cloudinaryService;
 	
+	@GetMapping("/folios/mis-folios")
+	public ResponseEntity<?> getMisFolios(@AuthenticationPrincipal Usuario usuario) {
+		if (usuario == null || usuario.getIdCliente() == null) {
+			Map<String, Object> response = new HashMap<>();
+			response.put("mensaje", "El usuario autenticado no tiene un cliente asociado");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+		}
+
+		try {
+			List<ReparacionClienteDTO> folios = folioService.getFoliosPorCliente(usuario.getIdCliente());
+			return ResponseEntity.ok(folios);
+		} catch (RuntimeException e) {
+			Map<String, Object> response = new HashMap<>();
+			response.put("mensaje", e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		}
+	}
+
 	//@ApiOperation(value = "getFolios", notes = "Obtiene todos los folios generados")
 	@GetMapping("/listaFolios")
 	public List<FolioResponseDTO> getFolios(){

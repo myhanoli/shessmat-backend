@@ -30,17 +30,18 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Override
 	public void updateUsuariobyId(Usuario cliente) {
-	
-		usuariosDao.updateCliente(
-				 cliente.getId(), 
-				 cliente.getNombre(), 
-				 cliente.getApellidoPat(), 
-				 cliente.getApellidoMat(),
-				 cliente.getDireccion(),
-				 cliente.getTelefono(),
-				 cliente.getUsername(),
-				 cliente.getPassword()
-				 );
+		Usuario existente = usuariosDao.findById(cliente.getId()).orElseThrow();
+		existente.setNombre(cliente.getNombre());
+		existente.setApellidoPat(cliente.getApellidoPat());
+		existente.setApellidoMat(cliente.getApellidoMat());
+		existente.setDireccion(cliente.getDireccion());
+		existente.setTelefono(cliente.getTelefono());
+		existente.setUsername(cliente.getUsername());
+		existente.setPassword(cliente.getPassword());
+		existente.setRoles(cliente.getRoles());
+		existente.setIdCliente(cliente.getIdCliente());
+		existente.setEmail(cliente.getEmail());
+		usuariosDao.save(existente);
 	}
 	
 	@Override

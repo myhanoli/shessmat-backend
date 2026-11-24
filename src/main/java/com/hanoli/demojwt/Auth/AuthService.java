@@ -33,6 +33,7 @@ public class AuthService {
                 .email(userEntity.getEmail())
                 .name(userEntity.getNombre() + " " + userEntity.getApellidoPat() + " " + userEntity.getApellidoMat())
                 .roles(userEntity.getRoles() != null ? new ArrayList<>(userEntity.getRoles()) : List.of())
+                .idCliente(userEntity.getIdCliente())
                 .build();
         String token = jwtService.getToken(userEntity);
         return AuthResponse.builder()

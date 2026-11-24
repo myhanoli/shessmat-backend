@@ -71,6 +71,10 @@ public class Usuario implements Serializable, UserDetails{
 	@JsonProperty("email")
 	private String email;
 
+	@JsonProperty("id_cliente")
+	@Column(name = "role")
+	private Long idCliente;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles != null ? roles.stream().map(SimpleGrantedAuthority::new).toList() : List.of();

@@ -62,6 +62,7 @@ public class UsuariosRestController {
 				.username(cliente.getUsername())
 				.password(passwordEncoder.encode( cliente.getPassword()))
 				.roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+				.idCliente(cliente.getIdCliente())
 				.email(cliente.getEmail())
 				.build();
 		try {
@@ -105,6 +106,7 @@ public class UsuariosRestController {
 						.username(cliente.getUsername())
 						.password(passwordEncoder.encode( cliente.getPassword()))
 						.roles(Set.of(cliente.getRol() != null ? cliente.getRol() : "user"))
+						.idCliente(cliente.getIdCliente())
 						.email(cliente.getEmail())
 						.build();
 

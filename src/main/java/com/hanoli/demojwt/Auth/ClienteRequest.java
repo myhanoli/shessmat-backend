@@ -21,5 +21,7 @@ public class ClienteRequest {
 	private String username;
 	private String password;
 	private String rol;
+	@JsonProperty("id_cliente")
+	private Long idCliente;
 	private String email;
 }

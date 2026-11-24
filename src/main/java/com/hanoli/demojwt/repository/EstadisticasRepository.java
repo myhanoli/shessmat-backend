@@ -62,8 +62,12 @@ public interface EstadisticasRepository extends JpaRepository<Folio, Long> {
 		        )
 		        FROM Folio f
 		        JOIN f.cliente c
+		        WHERE f.fecha >= :inicio AND f.fecha < :finExclusivo
 		        GROUP BY c.numCliente, c.nombre, c.apellidoPat
 		        ORDER BY COUNT(f) DESC
 		    """)
-		    Page<RankingClientesDTO> rankingClientes(Pageable pageable);
+		    Page<RankingClientesDTO> rankingClientes(
+		        @Param("inicio") LocalDate inicio,
+		        @Param("finExclusivo") LocalDate finExclusivo,
+		        Pageable pageable);
 }

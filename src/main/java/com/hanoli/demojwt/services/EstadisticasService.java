@@ -50,9 +50,13 @@ public class EstadisticasService {
 	        return estadisticasRepository.rankingClientes();
 	    }
 	    
-	    public List<RankingClientesDTO> obtenerTop10Clientes() {
+	    public List<RankingClientesDTO> obtenerTop5Clientes() {
+	        LocalDate inicioAnioActual = LocalDate.now().withDayOfYear(1);
+	        LocalDate inicio = inicioAnioActual.minusYears(1);
+	        LocalDate finExclusivo = inicioAnioActual.plusYears(1);
+
 	        return estadisticasRepository
-	                .rankingClientes(PageRequest.of(0, 10))
+	                .rankingClientes(inicio, finExclusivo, PageRequest.of(0, 5))
 	                .getContent();
 	    }
 

@@ -56,7 +56,7 @@ public class EstadisticasController {
 	@GetMapping("/folios/ranking-clientes/top10")
 	public ResponseEntity<?> top10Clientes() {
 	    return ResponseEntity.ok(
-	    		estadisticasService.obtenerTop10Clientes()
+	        estadisticasService.obtenerTop5Clientes()
 	    );
 	}
 	
